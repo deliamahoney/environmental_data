@@ -1,0 +1,19 @@
+require(here)
+here()
+
+habitatdata = read.csv(here("hab.sta.csv"))
+birddata = read.csv(here("bird.sta.csv"))
+
+habitatdatdf = data.frame(habitatdata)
+birddatdf = data.frame(birddata)
+
+site = birddatdf$SWTH
+
+hist(site, 
+  main = "DMahoney Swaison's Thrush",
+  xlab = "Number of Birds Counted",
+  ylab = "Frequency",
+  breaks = 7,
+  col = "deeppink",
+  border = "deeppink4")
+  

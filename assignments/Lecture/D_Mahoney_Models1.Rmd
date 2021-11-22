@@ -1,0 +1,31 @@
+require (here)
+here()
+read.csv ("catrate.csv")
+catrate = data.frame(catrate)
+head(catrate)
+summary(catrate)
+hist(catrate$cat.rate, main = "Histogram of Catastrophe Rates", xlab = "Catastrophe Rate", ylab = "Frequency")
+
+shapiro.test(catrate$cat.rate)
+t.test(catrate$cat.rate, mu = 2/7)
+wilcox.test(catrate$cat.rate, mu = 2/7)
+
+require(palmerpenguins)
+penguin_dat = droplevels(subset(penguins, species != "Gentoo"))
+summary(penguin_dat)
+boxplot(
+  flipper_length_mm ~ species, 
+  data = penguin_dat,
+  ylab = "Flipper Length (mm)")
+dat_adelie = subset(penguin_dat, species == "Adelie")
+shapiro.test(dat_adelie$flipper_length_mm)
+dat_chinstrap = subset(penguin_dat, species == "Chinstrap")
+shapiro.test(dat_chinstrap$flipper_length_mm)
+
+par(mfrow=c(1,2))
+hist(dat_adelie$flipper_length_mm, main = "Histogram of Adelie Flipper Length", xlab = "Flipper Length mm", ylab = "Frequency")
+hist(dat_chinstrap$flipper_length_mm, main = "Histogram of Chinstrap Flipper Length", xlab = "Flipper Length mm", ylab = "Frequency")
+
+t.test(flipper_length_mm ~ species, data = penguin_dat)
+
+

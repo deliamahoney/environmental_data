@@ -1,0 +1,20 @@
+require("here")
+here()
+
+catrate = read.csv(here("catrate.csv"))
+delomys = read.csv(here("delomys.csv"))
+rope = read.csv(here("rope.csv"))
+
+catrate_df = data.frame(catrate)
+delomys_df = data.frame(delomys)
+rope_df = data.frame(rope)
+
+rope_type = rope_df$rope.type
+blade = rope_df$blade
+cut = rope_df$p.cut
+strength = rope_df$p.strength
+
+plot(cut, strength, 
+  main = "Delia Mahoney Rope",
+  xlab = "Cut",
+  ylab = "Strength")

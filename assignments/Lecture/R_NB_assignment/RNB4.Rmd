@@ -1,0 +1,24 @@
+---
+title: "R Markdown Documents - Part 1"
+subtitle: "Analysis of Environmental Data"
+author: "Delia Mahoney"
+output: 
+  html_document:
+    toc: TRUE
+    toc_float: TRUE
+---
+
+# Introduction
+  My name is **Delia** **Mahoney** and I am a first year in the ECO *Forest* *Resources* *and* *Arboriculture* program. Outside of class, I enjoy trail running and am part of the Irish Dance club.
+  
+# Concepts List
+1. Basic R skills
+2. Effective designing of a hypothesis
+3. Successful data analysis
+    
+# Course List
+  + Plants in the Landscape
+  + Landscape Pattern and Process
+  + Pruning Fruit Crops
+
+
