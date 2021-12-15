@@ -1,0 +1,7 @@
+gdf = data.frame(ginkgo_data_2021)
+notch = gdf$notch_depth
+seeds = gdf$seeds_present
+boxplot(notch ~ seeds)
+width = gdf$max_width
+depth = gdf$max_depth
+plot(depth, width)

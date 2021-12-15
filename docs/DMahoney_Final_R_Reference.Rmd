@@ -1,0 +1,284 @@
+---
+title: 'Final Project: R Reference'
+author: "Delia Mahoney"
+date: "12/2/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+# R Reference Guide {.tabset .tabset-pills}
+
+## Loading Data and Packages
+
+### here()
+
+The first step is to tell R to utilize the package "here" which we do with the require() function.This allows us to tell R where to look for files in the directory
+```{r}
+require("here")
+```
+We can also use require() to load a pacakge, in this case the Palmer Penguins Data Package
+```{r}
+require(palmerpenguins)
+```
+The library() function is very similar to require() and could also be used to load data and packages
+```{r}
+library(here)
+library(palmerpenguins)
+```
+
+### read.csv()
+We can use read.csv() to import a document in the  comma separated value format in to R
+
+```{r}
+ginkgo_data_2021 <- read.csv(here("data", "ginkgo_data_2021.csv"))
+head(ginkgo_data_2021)
+```
+The head function allows us to preview a large matrix or data frame by just showing us the first few rows
+
+## Data Structures
+
+### c()
+The function c() combines or concatenates its arguments into a vector (a 1-dimensional data structure consisting of 1 or more elements).
+
+* All of the elements must be of the same type.
+* Can’t combine character and numeric types in the same call to c()
+
+Here’s two examples using numeric and character data types:
+
+```{r}
+## Create a vector of numbers:
+num_vec  = c(1, 4, 8, 9, 13)
+
+## Create a vector of characters:
+char_vec = c("a", "fish", "data is cool")
+```
+Show the contents of a vector by typing the name of the vector, or using the print() function.
+
+```{r}
+## Typing the name of the vector into the console prints the contents
+num_vec
+
+## The print() function accomplishes the same task:
+print(char_vec)
+
+```
+### length()
+The function length() retrieves the count of objects in a given vector or other R object
+
+* Use Length(x), x is the chosen R object
+* Example vector: num_vec = c(1, 4, 8, 9, 13)
+
+```{r}
+num_vec
+length(num_vec)
+```
+Returns the count of objects in num_vec, which is 5.
+
+### matrix()
+The function matrix() creates a matrix of the given arguments, arranged in rows and columns
+
+You use the syntax matrix(data, nrow, ncol, byrow, dimnames)
+
+* All elements must be of the same type like in a vector
+* The "data" argument is what you want to organize
+* nrow is the desired number of rows, ncol is the number of columns
+* byrow is a logical argument, FALSE fills by columns, TRUE fills by rows
+* dimnames provides names for columns and rows 
+
+Here's an example that combines several numerical vectors
+```{r}
+vector_m = c(1, 4, 8, 9, 13, 15, 19, 26, 31, 33, 37, 40)
+```
+
+Then we'll create a matrix that sorts our vector into 3 rows
+```{r}
+matrix1 = matrix(data = vector_m, nrow = 3, byrow = TRUE)
+print(matrix1)
+```
+
+### data.frame
+
+This function creates a matrix of the data, organized in rows and columns for easier viewing
+
+* nrow allows you to specify the desired number of rows, ncol for the number of columns
+* dim() retrieves the dimensions of an object
+
+First we'll create the data frame for our ginkgo data and use dim to retrieve the number of observations
+```{r}
+ginkgo_df = data.frame(ginkgo_data_2021)
+head(ginkgo_df)
+```
+
+## Subsetting
+
+### $
+This function allows you to extract a subset from a larger data set
+
+```{r}
+here("ginkgo_data_2021.csv")
+petiole_length = ginkgo_data_2021$petiole_length
+```
+
+### []
+This function subsets data based on it's position within the data frame by specifying a column and/or row selection in the format [r,c]
+Select a row by entering the value in the first position, then a blank after the comma
+```{r}
+here("ginkgo_data_2021.csv")
+row1 = ginkgo_data_2021[1,]
+row1
+```
+You can also select for a particular element by providing both a row and column
+```{r}
+here("ginkgo_data_2021.csv")
+row2col3 = ginkgo_data_2021[2,3]
+row2col3
+```
+Select a column by entering a blank then the desired column, because this is so long we'll just print a preview 
+```{r}
+here("ginkgo_data_2021.csv")
+col3 = ginkgo_data_2021[,3]
+head(col3)
+```
+
+### subset()
+This function also allows you to take a subset of a larger data set by specifying the data set and the desired extraction
+```{r}
+Adelie = subset(penguins, species == "Adelie")
+Adelie
+```
+
+## Numerical Data Exploration
+
+### summary()
+
+The summary function displays the results of model operations, this includes min, max, median, and mean, as well as the quartile values, or counts of variables in categorical cases
+
+```{r}
+summary(ginkgo_data_2021)
+```
+
+### mean()
+
+The mean function calculates the mean of the data set
+
+```{r}
+mean(ginkgo_data_2021$notch_depth)
+```
+
+### sd()
+
+the sd() function returns the standard deviation of the data set
+
+```{r}
+sd(ginkgo_data_2021$notch_depth)
+```
+
+
+## Graphical Data Exploration
+
+### plot()
+This function returns a scatter plot that meets the given conditions:
+
+* col =  changes color
+* pch = changes the point shape with a number between 1 and 25
+* cex = scales the graph and text relative to default (1)
+* main = gives the plot title
+* xlab = gives the label for the x-axis
+* ylab = gives the label for the y-axis
+* xlim = determines the limit for the x-axis
+* ylim = determines the limit for the y-axis
+
+We'll use two variables from the ginkgo data, max leaf depth (x) and max leaf width (y)
+
+```{r}
+leaf_depth = ginkgo_data_2021$max_depth
+leaf_width = ginkgo_data_2021$max_width
+plot(leaf_depth, leaf_width, col = "deeppink4", pch = 4, cex = 1, main = "Ginkgo Leaf Depth vs Leaf Width", xlab = "Leaf Depth", ylab = "Leaf Width", xlim = c(0,150), ylim = c(0,120))
+```
+
+### hist()
+This function creates a histogram of the data, again with specifiable conditions
+We can use the breaks = argument to specify the number of bins in the histogram
+```{r}
+flipper_length = penguins$flipper_length_mm
+hist(flipper_length, breaks = 12, col = "deepskyblue3", main = "Flipper Length", xlab = "Flipper Length", ylab = "Frequency")
+```
+
+### blockplot()
+This function creates a boxplot of given variables
+```{r}
+boxplot(petiole_length, main = "Petiole Lengths", xlab = "Petiole Length", ylab = "Frequency")
+conditional_notch = subset(ginkgo_data_2021, seeds_present = "TRUE")
+
+```
+
+### par() and mfrow()
+These functions allow you to arrange multiple plots in one viewing pane
+
+```{r}
+par(mfrow = c(2,2))
+hist(ginkgo_data_2021$notch_depth, col = "dodgerblue3", main = "Notch Depth", xlab = "NOtch Depth", ylab = "Frequency")
+hist(ginkgo_data_2021$max_width, col = "deeppink4", main = "Max Width", xlab = "Max Width", ylab = "Frequency")
+hist(ginkgo_data_2021$max_depth, col = "goldenrod1", main = "Max Depth", xlab = "Max Depth", ylab = "Frequency")
+hist(ginkgo_data_2021$petiole_length, col = "forestgreen", main = "Petiole Length", xlab = "Petiole Length", ylab = "Frequency")
+
+```
+
+## Distribution Functions
+
+All 3 Normal Distribution functions use an "x" term for the vector or probabilities, and then a default of mean = 0, and an sd = 1. 
+
+The 3 Binomial Distributions provide the same types of results as the normal distributions, but this time with the arguments "size"  for the number of trials and "prob" for the probability of success for each trial
+
+### dnorm()
+
+This function gives the density of a normal distribution from a vector of quantiles
+
+```{r}
+dnorm(2, 4, 6, 8)
+```
+
+### pnorm()
+
+This function gives the distribution for a normal distribution from a vector of quantiles
+
+```{r}
+pnorm(2, 4, 6, 8)
+```
+
+### qnorm()
+
+This function gives the quantile function for a normal distribution from a vector of probabilities
+
+```{r}
+qnorm(2, 4, 6, 8)
+```
+
+### dbinom()
+
+This function gives the density of a binomial distribution from a vector of quantiles
+
+```{r}
+dbinom(10, size = 20, prob = .75)
+```
+
+### pbinom()
+
+This function gives the distribution for a binomial distribution from a vector of quantiles
+
+```{r}
+pbinom(10, size = 20, prob = .75)
+```
+
+### qbinom()
+
+This function gives the quantile function for a binomial distribution from a vector of probabilities
+
+```{r}
+qbinom(10, size = 20, prob = .75)
+```
+
+
+...

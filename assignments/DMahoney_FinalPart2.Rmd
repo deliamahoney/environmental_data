@@ -1,0 +1,185 @@
+---
+title: "DMahoney_FinalPart2"
+author: "Delia Mahoney"
+date: "12/10/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+# Final Project {.tabset .tabset-pills}
+
+## Questions 1-4
+
+### Q1
+The relationship between body mass and length seems generally linear through the bulk of the data, but slightly curved at either extreme. 
+
+### Q2
+The histogram for body mass is close to a normal distribution, but not exact. The histogram for body length is even further from normal, with a steep increase and several outlying values at the high end of the range. 
+
+### Q3
+The shapiro tests conclude that the data is not from a normal distribution because both p-values are so low we reject the null hypothesis that the data is from normal. Because of this and the shapes of the histograms, I do believe that the unconditioned data is not normally distributed. 
+
+### Q4
+The conditional boxplots show that for both species, males tend to be heavier, and overall penguins from the D.dorsalis species tend to be heavier. However, males in the D.sublineatus had more of a range in weight than any other category.
+
+```{r}
+require("here")
+delomys = read.csv(here("data", "delomys.csv"))
+delomys_df = data.frame(delomys)
+
+summary(delomys_df$body_mass)
+summary(delomys_df$body_length)
+
+shapiro.test(delomys_df$body_mass)
+shapiro.test(delomys_df$body_length)
+```
+body mass and length are not from a normally distributed population
+
+### PLOTS
+
+```{r}
+plot(delomys_df$body_mass, delomys_df$body_length, col = "red", main = "Body Mass vs Body Length", xlab = "Body Mass", ylab = "Body Length")
+
+hist(delomys_df$body_mass, col = "orange", main = "Body Mass", xlab = "Body Mass", ylab = "Frequency")
+hist(delomys_df$body_length, col = "green", main = "Body Length", xlab = "Length", ylab = "Frequency")
+
+boxplot(body_mass ~ binomial, data = delomys_df, col = "blue", main = "Body Mass condt Species", xlab = "Species", ylab = "Body Mass")
+boxplot(body_mass ~ sex, data = delomys_df, col = "purple", main = "Body Masscondt Sex", xlab = "Sex", ylab = "Body Mass")
+boxplot(body_mass ~ sex:binomial, data = delomys_df, col= "pink", main = "Body Mass condt Sex+Species", xlab = "Sex:Species", names = c("Female\nD.dorsalis", "Male\nD.dorsalis", "Female\nD.sublineatus", "Male\nD.sublineatus"), ylab = "Body Mass")
+
+```
+
+## Questions 5-6
+
+### Q5
+Given the results of the shapiro tests and histograms, we reject the null hypothesis that the residuals are drawn from a normally distributed population
+
+### Q6
+The violations of the normality assumption are not equally severe in all cases, fit1 is the most in violation with the lowest p-value and least normally shaped histogram. Fits 2-5 are pretty similar in histogram shape but with slight varying p-values, fit 2 is the least "in violation" with the largest p values. 
+
+### MODELS
+
+```{r}
+fit1 = lm(body_length ~ body_mass, data = delomys_df)
+fit1
+fit2 = lm(body_mass ~ sex, data = delomys_df)
+anova(fit2)
+fit3 = lm(body_mass ~ binomial, data = delomys_df)
+anova(fit3)
+fit4 = lm(body_mass ~ sex + binomial, data = delomys_df)
+anova(fit4)
+fit5 = lm(body_mass ~ sex * binomial, data = delomys_df)
+anova(fit5)
+```
+
+### RESIDUALS
+
+```{r}
+resid_fit1 = residuals(fit1)
+hist(resid_fit1, col = "red", xlab = "fit1 residuals", ylab = "frequency")
+resid_fit2 = residuals(fit2)
+hist(resid_fit2, col = "orange", xlab = "fit2 residuals", ylab = "frequency")
+resid_fit3 = residuals(fit3)
+hist(resid_fit3, col = "yellow", xlab = "fit3 residuals", ylab = "frequency")
+resid_fit4 = residuals(fit4)
+hist(resid_fit4, col = "green", xlab = "fit4 residuals", ylab = "frequency")
+resid_fit5 = residuals(fit5)
+hist(resid_fit5, col = "blue", xlab = "fit5 residuals", ylab = "frequency")
+```
+
+### SHAPIRO TESTS
+
+```{r}
+shapiro.test(resid_fit1)
+shapiro.test(resid_fit2)
+shapiro.test(resid_fit3)
+shapiro.test(resid_fit4)
+shapiro.test(resid_fit5)
+```
+Reject null, p-values all less than .05
+
+## Questions 7-9
+
+### COEFFICIENT TABLES
+
+### Q7
+The magnitude of the relationship between body length and body mass is .875, the slope of body mass from the model coefficient table.
+
+### Q8
+The expected body length of an animal that weighs 100g is 76.124 + 0.875(100) = 163.674g, this is the intercept value plus the weight of the animal multiplied by the body mass coefficient.
+
+### Q9 
+The expected body length of an animal with a weight of 0g is 76.124, the intercept value for body length.
+
+```{r}
+knitr::kable(coef(summary(fit1)))
+```
+
+## Questions 10-13
+
+### Q10
+The base case for sex is female.
+
+### Q11
+The base case for binomial(species) is D.dorsalis.
+
+### Q12
+Male animals are heavier.
+
+### Q13
+D.dorsalis animals are heavier.
+
+### COEFFICIENT TABLES
+```{r}
+knitr::kable(coef(summary(fit2)))
+knitr::kable(coef(summary(fit3)))
+knitr::kable(coef(summary(fit4)))
+knitr::kable(coef(summary(fit5)))
+```
+
+## Questions 14-16
+
+### Q14
+According to the ANOVA tables, sex and species are both important predictors for body mass, but species is much more so with a higher f-value of 102 vs the value for sex which is ~14, as well as a larger p-value.
+
+### Q15
+The interaction of sex:binomial is not significant because the p-value for the interaction term is .95 which is much greater than the significance level of .05.
+
+### Q16
+The p-values of the sex effect generally decreased from the individual model to either of the combined models, indicating it became a more significant predictor for the additive and interactive models. The p-value change from the sex-single-predictor model to the additive model was -0.00008, and from additive to interactive was +.0000006. The effect of species remained pretty much the same across the board, but always with a very small p-value (0) indicating it has a very high significance. 
+
+### ANOVA TABLES
+```{r}
+knitr::kable(anova(fit2))
+knitr::kable(anova(fit3))
+knitr::kable(anova(fit4))
+knitr::kable(anova(fit5))
+```
+
+
+## Questions 17-18
+
+### Q17
+The additive (fit4) and interactive (fit5) models have the lowest AIC values
+
+### Q18
+I would select the additive model (fit4) as the best fit. It has the lowest AIC value and very low p-values in the ANOVA table. The additive model is also more complex than the single-predictor model, but without being overly complex. It is easier to comprehend as a model because it doesn't have the interaction term that the interactive model has which can be weird to interpret. 
+
+```{r}
+AIC(fit2)
+AIC(fit3)
+AIC(fit4)
+AIC(fit5)
+```
+
+
+
+
+
+
+
+
+
+
